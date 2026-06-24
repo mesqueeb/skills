@@ -12,6 +12,12 @@ These skills help you write, refactor, and fix code.
 npx skills@latest add mesqueeb/skills/close-the-loop
 ```
 
+- **mop-the-slop** — Mop up code "slop" (sloppy comments, dead code, off-convention idioms, untidy tests, spec drift) by reviewing a target set of code (PR, working tree, staged, agent output, or conversation context) through independent "lenses" — one read-only sub-agent each — and applying the fixes autonomously.
+
+```sh
+npx skills@latest add mesqueeb/skills/mop-the-slop
+```
+
 ## Other Skills
 
 Other skills I use:

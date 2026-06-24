@@ -17,7 +17,8 @@ You're not following a checklist. You're reading the ticket, reading the code, a
 - **Check the implementation.** Find the relevant code — via linked PRs, commit history, or just reading the current codebase. Does the code do what the ticket asked?
 - **Spot drift.** Requirements and implementations often diverge. The dev may have changed their mind, misunderstood something, or the requirements evolved during development. If the implementation differs from the ticket, surface this. It might be fine — or it might be a gap worth discussing.
 - **Check test coverage.** Are there tests? Do they cover the right things? Are they clear and easy to understand? If there are no tests, should there be? Maybe there's a reason — ask if unsure.
-- **Do trivial cleanups yourself.** Stale TODOs, leftover dev comments, dead code from debugging — just fix these and mention it. Don't ask permission for drive-by fixes.
+- **Do trivial cleanups yourself.** Leftover debug prints, dead code from debugging — just fix these and mention it. Don't ask permission for drive-by fixes.
+- **Delegate comment quality to the mop-the-slop skill.** Don't eyeball comments yourself — run the mop-the-slop skill on the code you're reviewing. It owns subtractive comment cleanup (redundant, stale, verbose, commented-out code, dead TODOs, doc-comment style). You still *add* a comment where genuinely non-obvious behavior warrants one (below); mop-the-slop only ever removes.
 - **Flag substantive gaps.** Missing tests, incomplete behavior, architectural concerns — these get discussed, not silently fixed.
 - **Look for non-obvious behavior.** Anything where a new developer would go "wait, why does it do that?" deserves a code comment (`//`, `///`, JSDoc, etc. depending on the language). If it also deserves documentation outside of code, suggest that too.
 
@@ -32,8 +33,9 @@ Closing the loop on a PR means getting it merged. You're doing a CTO-level PR re
 - Is the PR linked to a ticket? Review that ticket first.
 - Does the PR description have TODOs or open questions? Verify they're resolved.
 - Code quality: clean up what you can, flag what you can't.
+- Comments: run the mop-the-slop skill on the diff — it handles comment quality (commented-out code, stale/redundant comments, dead TODOs, doc-comment style).
 - Tests: present and clear? Missing and needed?
-- Dev artifacts: leftover debug prints, commented-out code, TODO comments that should be resolved?
+- Dev artifacts: leftover debug prints, dead code from debugging?
 
 When the PR is ready, present a short report: what you checked, that it's clean, and propose merging into the target branch (name the branch). Wait for confirmation before merging.
 
