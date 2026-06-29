@@ -10,7 +10,7 @@ Review the comments in and immediately around the code you were given (the diff 
 
 ## This lens never adds
 
-You **never** suggest *adding* a comment. Every finding either removes a comment, shortens it, or fixes its style — never introduces a new one. The four things you flag:
+You **never** suggest adding a comment — every finding removes, shortens, or restyles. What you flag:
 
 1. **Redundant comments** — the comment just restates what the code plainly says (`// increment i`, `// loop over users`). Flag for deletion.
 2. **"What" instead of "why"** — the comment narrates mechanics the code already shows, instead of explaining intent or rationale. Flag to either delete (if the code is self-evident) or rewrite toward the *why*.
@@ -19,24 +19,11 @@ You **never** suggest *adding* a comment. Every finding either removes a comment
 
 Also flag for removal: **commented-out code** and **dangling TODO/FIXME** comments with no context, owner, or issue link.
 
-## Doc-comment convention (language-agnostic)
+## Doc comments
 
-Any comment sitting **above a declaration** (variable, function, type, etc.) should use that language's doc-comment form, so it surfaces on hover:
+A comment **above a declaration** (variable, function, type) should use the language's doc-comment form so it surfaces on hover — Swift `///`, JS/TS JSDoc `/** */`, equivalents elsewhere. Flag a plain `//` used there; conversely, a throwaway inline note should stay a plain comment.
 
-- Swift → `///`
-- JavaScript / TypeScript → JSDoc `/** ... */`
-- Other languages → their equivalent doc-comment syntax
-
-Flag a plain `//` (or language equivalent) used above a declaration where the doc-comment form belongs. Conversely, a throwaway inline implementation note should stay a plain comment, not a doc comment.
-
-## Anti-verbosity on doc comments
-
-Do **not** reward verbose parameter/return documentation. The types are already in the signature — restating them is noise.
-
-- Flag JSDoc `@param {string} name - the name` / `@returns {number}` that merely regurgitates types already declared.
-- Flag DocC `- Parameter x:` / `- Returns:` blocks that do the same.
-
-Even above functions and types, keep doc comments to a brief *why* or one-line summary — not a catalog of parameters and return types.
+Don't reward verbose param/return docs — the types are already in the signature. Flag JSDoc `@param {string} name` or DocC `- Parameter x:` blocks that just restate declared types. Keep doc comments to a one-line *why* or summary, not a catalog of parameters.
 
 ## Reporting
 

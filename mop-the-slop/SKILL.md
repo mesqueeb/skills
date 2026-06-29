@@ -1,6 +1,6 @@
 ---
 name: mop-the-slop
-description: Review a target set of code through independent "lenses" — comment quality, dead code, idioms/conventions, error handling, clarity, test quality, spec fidelity — each run by its own read-only sub-agent in repeated fresh rounds until findings converge, with the main agent applying fixes autonomously. Use when the user wants to review code from a PR, the working tree, staged changes, code an agent just wrote, or code referenced in the conversation.
+description: Review a target set of code through independent "lenses" — comment quality, dead code, idioms/conventions, error handling, clarity, test quality, spec fidelity, cohesion/placement — each run by its own read-only sub-agent in repeated fresh rounds until findings converge, with the main agent applying fixes autonomously. Use when the user wants to review code from a PR, the working tree, staged changes, code an agent just wrote, or code referenced in the conversation.
 ---
 
 # Mop the Slop
@@ -18,6 +18,7 @@ Each lens has a sea-monster identity used in everything you show the user — th
 | clarity | 🧜‍♀️ Little Mermaid (clarity) |
 | test-quality | 🦑 Scylla (test-quality) |
 | spec-fidelity | 🐋 Cetus (spec-fidelity) |
+| cohesion | 🐢 Aspidochelone (cohesion) |
 
 ## Interactive vs `--afk`
 
@@ -35,9 +36,9 @@ The sub-agents stay **independent and context-free.** You never tell a sub-agent
 This is your **very first action** when invoked without `--afk`. Do it from **current conversation context alone — read no files yet.** The human is here now and shouldn't wait on file I/O; resolving the target can happen later (step 3), by which point they're likely AFK.
 
 1. From what's already in the conversation, infer which lenses are relevant: what code was worked on, whether tests were touched, whether a spec/ticket/PRD is in play.
-2. Pose a **multi-select checklist** using whatever interactive multi-select prompt your harness offers (e.g. a multi-select question tool). **Always show all seven reviewers** in the `emoji + monster + (lens-id)` format — the user toggles against the full roster, never a pre-filtered subset. **Pre-select the ones your inference flagged as relevant** and label them `(recommended)`; leave the rest shown but unselected. If current context gives you **no signal**, pre-select **all seven**.
+2. Pose a **multi-select checklist** using whatever interactive multi-select prompt your harness offers (e.g. a multi-select question tool). **Always show all eight reviewers** in the `emoji + monster + (lens-id)` format — the user toggles against the full roster, never a pre-filtered subset. **Pre-select the ones your inference flagged as relevant** and label them `(recommended)`; leave the rest shown but unselected. If current context gives you **no signal**, pre-select **all eight**.
 
-   Do **not** hardcode how many options fit in one prompt — that limit belongs to the harness's tool and varies by tool and over time. If the multi-select can't fit all seven in a single prompt, **split across as many prompts as it takes** (e.g. group them into code-quality lenses and behavior/spec lenses) so the user still sees every lens. Never drop a lens just to fit a cap. Interactive TUIs run via the shell (inquirer, gum, fzf, etc.) **don't work** here — they need a terminal wired to the user, which a skill's shell commands don't get; the harness's native question tool is the only thing that renders real choices back to the user.
+   Do **not** hardcode how many options fit in one prompt — that limit belongs to the harness's tool and varies by tool and over time. If the multi-select can't fit all eight in a single prompt, **split across as many prompts as it takes** (e.g. group them into code-quality lenses and behavior/spec lenses) so the user still sees every lens. Never drop a lens just to fit a cap. Interactive TUIs run via the shell (inquirer, gum, fzf, etc.) **don't work** here — they need a terminal wired to the user, which a skill's shell commands don't get; the harness's native question tool is the only thing that renders real choices back to the user.
 3. The user toggles and confirms. Their selection is the roster for this run. If they deselect everything, there's nothing to review — say so and stop.
 4. **Announce the roster** before proceeding:
 
@@ -61,6 +62,7 @@ Each lens lives in `lenses/` and is a self-contained directive a sub-agent recei
 - **clarity** (`lenses/clarity.md`) — 🧜‍♀️ Little Mermaid — readability of added functions and logic.
 - **test-quality** (`lenses/test-quality.md`) — 🦑 Scylla — tests; auto-selected when the change touches tests.
 - **spec-fidelity** (`lenses/spec-fidelity.md`) — 🐋 Cetus — receives the spec; auto-selected when one exists.
+- **cohesion** (`lenses/cohesion.md`) — 🐢 Aspidochelone — code placement and ownership: does this code live in the right place, on the right type? Reads wider than its siblings (the change *plus* the existing concepts it should have joined). Auto-selected whenever the change **adds or moves functions, methods, or types** — i.e. any non-trivial code change; same default tier as clarity/idiom. Findings tend to ripple (re-homing touches call sites), so it biases toward **surface**, like idiom.
 
 These auto-selection rules decide what gets **pre-checked** (interactive) or **run** (under `--afk`) — they are heuristics, not hard gates. When invoked with `--afk`, run every auto-selected lens (skip test-quality if no tests changed, spec-fidelity if no spec). When interactive, run exactly the user's selection: a lens the user explicitly checked **always runs at least once** (§1), even against these heuristics — the sub-agent then judges whether it has anything to contribute. This override is **interactive-only**: under `--afk` there's no user selection, so the skip rules apply as-is.
 
@@ -109,11 +111,13 @@ A single round:
 
    The boundary is behavior, not line count: **re-review any edit that could change what the code does** — a one-line change still counts if it's logic rather than cosmetics — and when you're genuinely unsure, re-review.
 
-   Then print the end-of-round table. **List every one of the seven lenses, every round** — including ones that were never selected (mark them `⏭️ Skipped`) and ones already marked Complete in an earlier round (carry their last outcome forward). Sort re-review rows on top. The last three columns are **cumulative across all rounds so far**:
+   Then print the end-of-round table. **List every one of the eight lenses, every round** — including ones that were never selected (mark them `⏭️ Skipped`) and ones already marked Complete in an earlier round (carry their last outcome forward). Sort re-review rows on top. The last three columns are **cumulative across all rounds so far**:
 
    - **Rounds** — how many rounds this reviewer has actually run a sub-agent (skipped lenses stay `0`).
    - **Tokens** — total tokens its sub-agents have used across all rounds (sum the `subagent_tokens` each dispatch reports; skipped = `0`).
    - **Time** — total wall-clock its sub-agents have taken across all rounds (sum the reported `duration_ms`; skipped = `0`).
+
+   **If your sub-agent tool does not report token or duration metrics** (some return plain text only), mark those columns `n/a` and say so once — **never estimate or fabricate plausible-looking numbers.** A confabulated `~40k`/`~30s` dressed in this table's formatting reads as authoritative and is worse than an honest `n/a`.
 
    Close with a **Totals** footer: total rounds · total **sub-agent dispatches** (the cumulative number of sub-agents launched across all rounds — *not* one-per-lens; a lens re-reviewed twice counts twice) · total tokens · total time.
 
@@ -128,10 +132,11 @@ A single round:
    | 🎶 The Sirens (code-comments) | ✨ Clean | Nothing found | ✅ Complete | 1 | 20.1k | 7.5s |
    | 🦑 Scylla (test-quality) | ⏭️ Skipped | Not selected | — | 0 | 0 | 0s |
    | 🐋 Cetus (spec-fidelity) | ⏭️ Skipped | No spec | — | 0 | 0 | 0s |
+   | 🐢 Aspidochelone (cohesion) | 📤 Surfaced | 1 mislocated method sent to report | ✅ Complete | 1 | 23.4k | 9.1s |
 
    > Next round: 🐙 The Kraken (dead-code) · 🐍 Jörmungandr (idiom)
    >
-   > **Totals so far:** 2 rounds · 7 sub-agents · 149.2k tokens · 1m 01s
+   > **Totals so far:** 2 rounds · 8 sub-agents · 172.6k tokens · 1m 10s
 
 4. **Decide whether to loop again.** If **any lens is in the re-review state**, run another round with **only those lenses**. **The loop ends the first round that leaves no lens in the re-review state** — i.e. no lens made a substantive edit — at which point every remaining reviewer is satisfied and you've converged. There is **no round cap**: the active set shrinks each round (only still-editing lenses survive), so it terminates on its own.
 
