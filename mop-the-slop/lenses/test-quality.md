@@ -14,6 +14,8 @@ This is the most important thing you check. Be willing to flag a test that *exis
 
 Review the tests in and around what you were given. Don't crawl the whole suite.
 
+You may be pointed at code whose tests **didn't change** — or that has **no tests at all**. That's still in scope: review the relevant *existing* tests for the code under review, and where genuinely observable behavior has **no coverage**, recommend a focused test that *should* exist. Only recommend tests for behavior a caller or user can observe — never for internals (see the core principle). If there's nothing worth reviewing and nothing worth recommending, say so plainly and return empty.
+
 ## What you flag
 
 1. **Tests reaching into internals** — exercising private functions, asserting on internal/private state, or verifying *how* a result was computed rather than *what* was produced. Push toward driving the public surface and asserting on the observable outcome.
