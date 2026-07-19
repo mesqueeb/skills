@@ -6,6 +6,12 @@ A collection of agent skills that extend capabilities across planning, developme
 
 These skills help you write, refactor, and fix code.
 
+- **aha** — Discuss whether a specific piece of code is better as a separate function/variable or inlined — steelmanning the abstraction before any verdict, never reflexively unwrapping. Named for "Avoid Hasty Abstractions."
+
+```sh
+npx skills@latest add mesqueeb/skills/aha
+```
+
 - **close-the-loop** — Review and close GitHub tickets, PRs, or local task files by verifying implementation, tests, and documentation.
 
 ```sh
