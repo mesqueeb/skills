@@ -24,6 +24,14 @@ npx skills@latest add mesqueeb/skills/close-the-loop
 npx skills@latest add mesqueeb/skills/mop-the-slop
 ```
 
+## Documentation
+
+- **apple-documentation** — Research Apple APIs, HIG, Swift, WWDC sessions, sample code, and Swift-DocC through the Cupertino and Sosumi CLIs.
+
+```sh
+npx skills@latest add mesqueeb/skills/apple-documentation
+```
+
 ## Other Skills
 
 Other skills I use:
