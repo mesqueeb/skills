@@ -32,6 +32,14 @@ npx skills@latest add mesqueeb/skills/mop-the-slop
 npx skills@latest add mesqueeb/skills/apple-documentation
 ```
 
+## Writing
+
+- **humanizer-academic** — Rewrite academic prose to defeat AI detectors (Turnitin, GPTZero, Originality.ai) while preserving formal register.
+
+```sh
+npx skills@latest add mesqueeb/skills/humanizer-academic
+```
+
 ## Other Skills
 
 Other skills I use:
