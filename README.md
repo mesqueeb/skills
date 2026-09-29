@@ -24,6 +24,12 @@ npx skills@latest add mesqueeb/skills/close-the-loop
 npx skills@latest add mesqueeb/skills/mop-the-slop
 ```
 
+- **read-terminal** — Read the scrollback of another iTerm2 tab (a dev server, watcher, build) so the agent can check logs of processes you're running yourself. macOS + iTerm2 only.
+
+```sh
+npx skills@latest add mesqueeb/skills/read-terminal
+```
+
 ## Documentation
 
 - **apple-documentation** — Research Apple APIs, HIG, Swift, WWDC sessions, sample code, and Swift-DocC through the Cupertino and Sosumi CLIs.
