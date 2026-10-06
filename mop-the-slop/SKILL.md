@@ -1,6 +1,7 @@
 ---
 name: mop-the-slop
 description: Review a target set of code through independent "lenses" — comment quality, dead code, idioms/conventions, error handling, clarity, test quality, spec fidelity, cohesion/placement — each run by its own read-only sub-agent in repeated fresh rounds until findings converge, with the main agent applying fixes autonomously. Use when the user wants to review code from a PR, the working tree, staged changes, code an agent just wrote, or code referenced in the conversation.
+disable-model-invocation: true
 ---
 
 # Mop the Slop

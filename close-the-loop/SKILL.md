@@ -1,6 +1,7 @@
 ---
 name: close-the-loop
 description: Review and close GitHub tickets, PRs, or local task files by verifying implementation, tests, and documentation. Use when user wants to close a ticket, verify a ticket is done, review a PR for merge, check if a PRD is complete, or mentions "close the loop".
+disable-model-invocation: true
 ---
 
 # Close the Loop
